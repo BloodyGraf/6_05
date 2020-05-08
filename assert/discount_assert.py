@@ -1,19 +1,32 @@
-# наша задача не допустить отрицательной скидки
+def apply_discount(price, discount):
+    return int(float(price) * (1.0 - float(discount)))
 
-def apply_discount(product, discount):
-    """ продукт на вход приходит в виде словаря, а функция возвращает его имя и скидку"""
-    price = int(product['цена'] * (1.0 - discount))
+def read_file(filename):
     try:
-        assert 0 <= price <= product['цена']
-    except AssertionError:
-        print("Протри глаза! ")
+        with open(filename, 'r') as f:
+            content = f.readlines()
+    except FileNotFoundError:
+        print(f"неверное имя файла  {filename}")
     else:
-        data = product['имя'] +" "+ product['страна'] +" " +str(price)
-        return data
+        return content
 
-kreslo = {'имя': 'кресло', 'цена' : 1200,  'страна': "China"}
+def write_file(filename, data):
+    try:
+        with open(filename, 'w') as f:
+            for d in data:
+                f.write(f"{str(d)}\n")
+    except FileNotFoundError:
+        # pass
+        print(f"неверное имя файла  {filename}")
 
-print(apply_discount(kreslo, 0.25))
+data = read_file("../files/data.txt")
+discount = read_file("../files/discount.txt")
 
+result_data = []
+counter = 0
+for d in data:
+    i = d.split(",")
+    result_data.append(f"{i[0]}, {apply_discount(i[1],discount[counter])}")
+    counter += 1
 
-print(apply_discount(kreslo, 2.5))
+write_file("../files/discounted_prices.txt", result_data)
